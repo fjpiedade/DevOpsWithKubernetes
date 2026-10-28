@@ -86,6 +86,40 @@ git clone https://github.com/fjpiedade/DevOpsWithKubernetes.git
 cd DevOpsWithKubernetes/exercises/1.1/log_output
 ```
 
+## Kubernetes
+
+The application is deployed to Kubernetes using a declarative Deployment manifest located at `manifests/deployment.yaml`.
+
+Apply the manifest:
+
+```bash
+kubectl apply -f exercises/1.1/log_output/manifests/deployment.yaml
+```
+
+Check the Deployment and Pods:
+
+```bash
+kubectl rollout status deployment/log-output
+kubectl get deployments
+kubectl get pods
+```
+
+Follow the application logs:
+
+```bash
+kubectl logs -f deployment/log-output
+```
+
+Restart the Deployment and verify that the application starts with a new UUID:
+
+```bash
+kubectl rollout restart deployment/log-output
+kubectl rollout status deployment/log-output
+kubectl logs -f deployment/log-output
+```
+
+The application logs a UTC timestamp and its UUID every five seconds. The UUID remains the same while the application instance is running and changes after a restart.
+
 Run the application:
 
 ```bash
