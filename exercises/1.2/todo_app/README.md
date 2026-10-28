@@ -66,6 +66,32 @@ The deployment was verified in Kubernetes, and the logs confirmed that the serve
 
 External access to the application is not configured in this exercise.
 
+## Kubernetes with Declarative approach using manifests
+
+The application is deployed to Kubernetes using a declarative Deployment manifest located at `manifests/deployment.yaml`.
+
+Apply the manifest from the repository root:
+
+```bash
+kubectl apply -f exercises/1.2/todo_app/manifests/deployment.yaml
+```
+
+Check the Deployment and Pods:
+
+```bash
+kubectl rollout status deployment/todo-app
+kubectl get deployments
+kubectl get pods
+```
+
+Check the application logs:
+
+```bash
+kubectl logs deployment/todo-app
+```
+
+The application listens on port `9901` by default. External access is not configured in this exercise.
+
 ## Technologies
 
 - Go
