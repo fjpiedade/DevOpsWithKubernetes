@@ -1,4 +1,4 @@
-# Todo App — Exercise 1.2
+# Todo Application
 
 A simple HTTP server written in Go, created for Exercise 1.2 of the [DevOps with Kubernetes 2026 course](https://courses.mooc.fi/org/uh-cs/courses/devops-with-kubernetes-2026).
 
@@ -16,6 +16,40 @@ At startup, the server logs a message such as:
 ```text
 Server started in port 9000
 ```
+
+## Exercise 1.5 - The project, step 3
+
+The Todo application responds to HTTP GET requests sent to `/` with a simple text page.
+
+The application listens on port `9901` by default.
+
+### Verify access in Kubernetes
+
+Get the Pod name:
+
+```bash
+kubectl get pods
+```
+
+Forward local port `3003` to port `9901` in the Pod:
+
+```bash
+kubectl port-forward pod/<pod-name> 3003:9901
+```
+
+Open `http://localhost:3003/` in a browser, or test with:
+
+```bash
+curl http://localhost:3003/
+```
+
+Expected response:
+
+```text
+To-do Application with Go
+```
+
+Press `Ctrl+C` to stop port forwarding.
 
 ## Run locally
 
