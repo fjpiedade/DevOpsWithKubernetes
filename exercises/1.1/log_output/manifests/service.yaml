@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: log-output
+spec:
+  selector:
+    app: log-output
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9901
+  type: ClusterIP
