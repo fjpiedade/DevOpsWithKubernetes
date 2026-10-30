@@ -17,56 +17,54 @@ At startup, the server logs a message such as:
 Server started in port 9000
 ```
 
-## Exercise 1.5 - The project, step 3
+## Exercise 1.6 - The project, step 4
 
-The Todo application responds to HTTP GET requests sent to `/` with a simple text page.
-
-The application listens on port `9901` by default.
-
-### Verify access in Kubernetes
-
-Get the Pod name:
+### 1. Create the k3d cluster
 
 ```bash
+k3d cluster create --port 8082:30080@agent:0 -p 8081:80@loadbalancer --agents 2
+```
+
+### 2. Deploy the application
+
+```bash
+kubectl create deployment todo-app --image=fjpiedade/todo-app:1.0
+kubectl rollout status deployment/todo-app
+```
+
+### 3. Get the Service manifest
+
+```bash
+git clone https://github.com/fjpiedade/DevOpsWithKubernetes.git
+cd DevOpsWithKubernetes
+```
+
+**Note:** If you already cloned the repository, skip this step and run the following commands from the repository root.
+
+### 4. Apply the NodePort Service
+
+```bash
+kubectl apply -f exercises/1.2/todo_app/manifests/service.yaml
+```
+
+### 5. Verify the deployment and Service
+
+```bash
+kubectl get deployments
 kubectl get pods
+kubectl get services
 ```
 
-Forward local port `3003` to port `9901` in the Pod:
+### 6. Test the application
 
 ```bash
-kubectl port-forward pod/<pod-name> 3003:9901
-```
-
-Open `http://localhost:3003/` in a browser, or test with:
-
-```bash
-curl http://localhost:3003/
+curl http://localhost:8082/
 ```
 
 Expected response:
 
 ```text
 To-do Application with Go
-```
-
-Press `Ctrl+C` to stop port forwarding.
-
-## Run locally
-
-```bash
-go run .
-```
-
-To select a different port:
-
-```bash
-PORT=9000 go run .
-```
-
-Test the HTTP response:
-
-```bash
-curl http://localhost:9000/
 ```
 
 ## Docker
