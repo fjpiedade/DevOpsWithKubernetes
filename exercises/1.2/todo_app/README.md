@@ -17,48 +17,69 @@ At startup, the server logs a message such as:
 Server started in port 9000
 ```
 
-## Exercise 1.6 - The project, step 4
+# Exercise 1.8 — The project, step 5
 
-### 1. Create the k3d cluster
+## Overview
 
-```bash
-k3d cluster create --port 8082:30080@agent:0 -p 8081:80@loadbalancer --agents 2
-```
+The Todo application is now accessible externally through a Kubernetes Ingress instead of a NodePort Service.
 
-### 2. Deploy the application
+Traefik routes HTTP requests to the Todo application.
 
-```bash
-kubectl create deployment todo-app --image=fjpiedade/todo-app:1.0
-kubectl rollout status deployment/todo-app
-```
+## 1. Clone the repository
 
-### 3. Get the Service manifest
+Clone the project:
 
 ```bash
 git clone https://github.com/fjpiedade/DevOpsWithKubernetes.git
 cd DevOpsWithKubernetes
 ```
 
-**Note:** If you already cloned the repository, skip this step and run the following commands from the repository root.
+If you already have the repository cloned, skip this step and run the following commands from the repository root.
 
-### 4. Apply the NodePort Service
+## 2. Kubernetes resources
+
+The application uses the following resources:
+
+- **Deployment:** `todo-app`
+- **Service:** `todo-app-svc` (`ClusterIP`)
+- **Ingress:** `todo-app-ingress` (`traefik`)
+- **Application port:** `9901`
+
+The manifests are located in `exercises/1.2/todo_app/manifests/`:
+
+- `deployment.yaml` — deploys the Todo application.
+- `service.yaml` — exposes the application internally using ClusterIP.
+- `ingress.yaml` — provides external HTTP access through Traefik.
+
+## 3. Deploy the application
+
+Apply the Kubernetes manifests:
 
 ```bash
-kubectl apply -f exercises/1.2/todo_app/manifests/service.yaml
+kubectl apply -f exercises/1.2/todo_app/manifests/
 ```
 
-### 5. Verify the deployment and Service
+Check the resources:
 
 ```bash
 kubectl get deployments
-kubectl get pods
 kubectl get services
+kubectl get ingress
+kubectl get pods
 ```
 
-### 6. Test the application
+## 4. Access the application
+
+The application is accessible through the Ingress at:
+
+```text
+http://localhost:8081/
+```
+
+Test it with:
 
 ```bash
-curl http://localhost:8082/
+curl http://localhost:8081/
 ```
 
 Expected response:
@@ -66,6 +87,10 @@ Expected response:
 ```text
 To-do Application with Go
 ```
+
+## Result
+
+The Todo application is accessible through Traefik Ingress using a ClusterIP Service instead of NodePort.
 
 ## Docker
 
