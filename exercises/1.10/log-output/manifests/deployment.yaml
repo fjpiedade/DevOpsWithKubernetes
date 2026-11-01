@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-output
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-output
+  template:
+    metadata:
+      labels:
+        app: log-output
+    spec:
+      containers:
+        - name: log-writer
+          image: fjpiedade/log-writer:1.0
+          env:
+            - name: LOG_FILE
+              value: /usr/src/app/files/log.txt
+          volumeMounts:
+            - name: shared-log
+              mountPath: /usr/src/app/files
+
+        - name: log-reader
+          image: fjpiedade/log-reader:1.0
+          ports:
+            - containerPort: 9901
+          env:
+            - name: LOG_FILE
+              value: /usr/src/app/files/log.txt
+            - name: PORT
+              value: "9901"
+          volumeMounts:
+            - name: shared-log
+              mountPath: /usr/src/app/files
+
+      volumes:
+        - name: shared-log
+          emptyDir: {}
