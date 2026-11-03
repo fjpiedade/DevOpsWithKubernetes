@@ -30,4 +30,5 @@ Thumbs.db
 # Environment and secrets
 .env
 .env.*
+*.txt
 

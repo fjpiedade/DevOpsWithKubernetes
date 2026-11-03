@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ping-pong
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ping-pong
+  template:
+    metadata:
+      labels:
+        app: ping-pong
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k3d-k3s-default-agent-0
+      containers:
+        - name: ping-pong
+          image: fjpiedade/ping-pong:1.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9901
+          env:
+            - name: PORT
+              value: "9901"
+            - name: COUNTER_FILE
+              value: /usr/src/app/files/pingpong.txt
+          volumeMounts:
+            - name: shared-data
+              mountPath: /usr/src/app/files
+      volumes:
+        - name: shared-data
+          persistentVolumeClaim:
+            claimName: persisting-data-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-output
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-output
+  template:
+    metadata:
+      labels:
+        app: log-output
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k3d-k3s-default-agent-0
+      containers:
+        - name: log-writer
+          image: fjpiedade/log-writer:1.1
+          imagePullPolicy: Always
+          env:
+            - name: LOG_FILE
+              value: /usr/src/app/files/log.txt
+          volumeMounts:
+            - name: shared-data
+              mountPath: /usr/src/app/files
+        - name: log-reader
+          image: fjpiedade/log-reader:1.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9901
+          env:
+            - name: PORT
+              value: "9901"
+            - name: LOG_FILE
+              value: /usr/src/app/files/log.txt
+            - name: COUNTER_FILE
+              value: /usr/src/app/files/pingpong.txt
+          volumeMounts:
+            - name: shared-data
+              mountPath: /usr/src/app/files
+      volumes:
+        - name: shared-data
+          persistentVolumeClaim:
+            claimName: persisting-data-pvc
