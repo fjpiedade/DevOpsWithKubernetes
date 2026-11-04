@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-app
+  template:
+    metadata:
+      labels:
+        app: todo-app
+    spec:
+      containers:
+        - name: todo-app
+          image: fjpiedade/todo-app:1.3
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9901
+          env:
+            - name: PORT
+              value: "9901"
+            - name: IMAGE_FILE
+              value: "/data/image.jpg"
+          volumeMounts:
+            - name: todo-app-storage
+              mountPath: /data
+      volumes:
+        - name: todo-app-storage
+          persistentVolumeClaim:
+            claimName: persisting-data-pvc

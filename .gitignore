@@ -22,7 +22,8 @@
 Thumbs.db
 
 # Go
-/exercise/1.1/log_output/log-output.exe
+/exercises/1.1/log_output/log-output.exe
+/exercises/1.12/todo_app/image/
 *.test
 *.out
 /vendor/
