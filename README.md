@@ -18,5 +18,6 @@ My submissions for the [DevOps with Kubernetes course](https://courses.mooc.fi/o
 | [1.10](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/1.10/exercises/1.10/log-output) | [log-writer / log-reader](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/main/exercises/1.10/log-output) | [Release 1.10](https://github.com/fjpiedade/DevOpsWithKubernetes/releases/tag/1.10) |
 | [1.11](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/1.11/exercises/1.11)            | [ping-pong / log-output](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/main/exercises/1.11)             | [Release 1.11](https://github.com/fjpiedade/DevOpsWithKubernetes/releases/tag/1.11) |
 | [1.12](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/1.12/exercises/1.12/todo_app)   | [todo_app](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/main/exercises/1.12/todo_app)                  | [Release 1.12](https://github.com/fjpiedade/DevOpsWithKubernetes/releases/tag/1.12) |
+| [1.13](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/1.13/exercises/1.12/todo_app)   | [todo_app](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/main/exercises/1.12/todo_app)                  | [Release 1.13](https://github.com/fjpiedade/DevOpsWithKubernetes/releases/tag/1.13) |
 
 More exercises will be added as the course progresses.

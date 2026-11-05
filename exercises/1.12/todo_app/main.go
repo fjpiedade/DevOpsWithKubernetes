@@ -1,8 +1,10 @@
 package main
 
 import (
+	"embed"
 	"fmt"
 	"io"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -133,6 +135,9 @@ func (c *ImageCache) serveImage(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, c.imageFile)
 }
 
+//go:embed static/*
+var frontend embed.FS
+
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -141,8 +146,27 @@ func main() {
 
 	cache := newImageCache()
 
+	// Load frontend files from the embedded filesystem.
+	staticFiles, err := fs.Sub(frontend, "static")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	indexHTML, err := fs.ReadFile(staticFiles, "index.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Serve the cached image.
 	http.HandleFunc("/image", cache.serveImage)
 
+	// Serve frontend assets.
+	http.Handle("/static/", http.StripPrefix(
+		"/static/",
+		http.FileServer(http.FS(staticFiles)),
+	))
+
+	// Serve the application homepage.
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
 			http.NotFound(w, r)
@@ -155,62 +179,14 @@ func main() {
 		}
 
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		fmt.Fprint(w, `<!DOCTYPE html>
-<html lang="pt">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>To-do Application</title>
 
-    <style>
-        body {
-            margin: 0;
-            padding: 30px 20px;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f4;
-        }
+		if r.Method == http.MethodHead {
+			return
+		}
 
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #333;
-        }
-
-        .image-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-        }
-
-        .image-container img {
-            width: 700px;
-            height: 450px;
-            object-fit: cover;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-			margin-bottom: 20px;
-        }
-
-        @media (max-width: 650px) {
-            .image-container img {
-                width: 100%;
-                height: 250px;
-            }
-        }
-    </style>
-</head>
-
-<body>
-    <h1>To-do Application with Go</h1>
-
-    <div class="image-container">
-        <img src="/image" alt="Random image from Lorem Picsum">
-    </div>
-	<span>DevOps with Kubernetes 2026</span>
-</body>
-</html>`)
+		if _, err := w.Write(indexHTML); err != nil {
+			log.Printf("Error serving homepage: %v", err)
+		}
 	})
 
 	log.Printf("Server started on port %s", port)

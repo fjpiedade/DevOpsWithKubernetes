@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Todo Application</title>
+
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+    <main class="container">
+
+        <header>
+            <h1>Todo Application</h1>
+            <section class="image-section" aria-label="Random image">
+                <img src="/image" alt="Random image from Lorem Picsum">
+            </section>
+            <!-- <p class="subtitle">DevOps with Kubernetes 2026</p> -->
+        </header>
+
+        <section class="todo-section" aria-labelledby="todo-heading">
+            <h2 id="todo-heading">Add a new todo</h2>
+
+            <form class="todo-form">
+                <label for="todo-input">What needs to be done?</label>
+
+                <div class="input-group">
+                    <input type="text" id="todo-input" name="todo" placeholder="Write your todo here..." maxlength="140"
+                        aria-describedby="character-limit">
+
+                    <button type="button">Send</button>
+                </div>
+
+                <small id="character-limit">
+                    Maximum 140 characters.
+                </small>
+            </form>
+        </section>
+
+        <section class="todo-section" aria-labelledby="list-heading">
+            <h2 id="list-heading">Todo list</h2>
+
+            <ul class="todo-list">
+                <li>Learn Go programming</li>
+                <li>Build a Todo application</li>
+                <li>Learn Kubernetes</li>
+                <li>Complete exercise 1.13</li>
+            </ul>
+        </section>
+
+        <footer>
+            DevOps with Kubernetes 2026
+        </footer>
+
+    </main>
+</body>
+
+</html>

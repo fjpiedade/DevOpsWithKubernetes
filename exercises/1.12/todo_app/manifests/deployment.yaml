@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: todo-app
-          image: fjpiedade/todo-app:1.3
+          image: fjpiedade/todo-app:1.4
           imagePullPolicy: Always
           ports:
             - containerPort: 9901
