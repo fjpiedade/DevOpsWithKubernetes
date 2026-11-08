@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ping-pong
+  namespace: exercises
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ping-pong
+  template:
+    metadata:
+      labels:
+        app: ping-pong
+    spec:
+      containers:
+        - name: ping-pong
+          image: fjpiedade/ping-pong:2.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9901
+          env:
+            - name: PORT
+              value: "9901"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-output
+  namespace: exercises
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-output
+  template:
+    metadata:
+      labels:
+        app: log-output
+    spec:
+      containers:
+        - name: log-writer
+          image: fjpiedade/log-writer:2.1
+          imagePullPolicy: Always
+          env:
+            - name: LOG_FILE
+              value: /usr/src/app/files/log.txt
+          volumeMounts:
+            - name: log-data
+              mountPath: /usr/src/app/files
+
+        - name: log-reader
+          image: fjpiedade/log-reader:2.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9901
+          env:
+            - name: PORT
+              value: "9901"
+            - name: LOG_FILE
+              value: /usr/src/app/files/log.txt
+            - name: PINGPONG_URL
+              value: "http://ping-pong-svc:80/pings"
+          volumeMounts:
+            - name: log-data
+              mountPath: /usr/src/app/files
+
+      volumes:
+        - name: log-data
+          emptyDir: {}
