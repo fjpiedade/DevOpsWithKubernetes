@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: todo-generator
+  namespace: project
+spec:
+  schedule: "0 * * * *"
+  timeZone: "Etc/UTC"
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 300
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      activeDeadlineSeconds: 120
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: todo-generator
+              image: fjpiedade/todo-generator:2.9
+              imagePullPolicy: Always
+              env:
+                - name: TODO_BACKEND_URL
+                  value: "http://todo-backend-svc:80"
