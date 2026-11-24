@@ -29,5 +29,6 @@ My submissions for the [DevOps with Kubernetes course](https://courses.mooc.fi/o
 | [2.8](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/2.8/exercises/2.8)               | [todo-app / todo-backend](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/main/exercises/2.8)               | [Release 2.8](https://github.com/fjpiedade/DevOpsWithKubernetes/releases/tag/2.8)   |
 | [2.9](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/2.9/exercises/2.9)               | [todo-generator](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/main/exercises/2.9)                        | [Release 2.9](https://github.com/fjpiedade/DevOpsWithKubernetes/releases/tag/2.9)   |
 | [2.10](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/2.10/exercises/2.10)            | [todo-app / todo-backend / monitoring](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/main/exercises/2.10) | [Release 2.10](https://github.com/fjpiedade/DevOpsWithKubernetes/releases/tag/2.10) |
+| [3.1](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/3.1/exercises/3.1)               | [ping-pong](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/main/exercises/3.1)                             | [Release 3.1](https://github.com/fjpiedade/DevOpsWithKubernetes/releases/tag/3.1)   |
 
 More exercises will be added as the course progresses.
