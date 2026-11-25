@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-output
+  namespace: exercises
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-output
+  template:
+    metadata:
+      labels:
+        app: log-output
+    spec:
+      containers:
+        - name: log-writer
+          image: fjpiedade/log-writer:3.2
+          imagePullPolicy: Always
+          env:
+            - name: LOG_FILE
+              value: /usr/src/app/files/log.txt
+          volumeMounts:
+            - name: log-data
+              mountPath: /usr/src/app/files
+
+        - name: log-reader
+          image: fjpiedade/log-reader:3.2
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 9901
+          env:
+            - name: PORT
+              value: "9901"
+            - name: LOG_FILE
+              value: /usr/src/app/files/log.txt
+            - name: PINGPONG_URL
+              value: "http://ping-pong-svc:80/pings"
+            - name: CONFIG_FILE
+              value: /usr/src/app/config/information.txt
+            - name: MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: log-output-config
+                  key: MESSAGE
+          volumeMounts:
+            - name: log-data
+              mountPath: /usr/src/app/files
+            - name: config-volume
+              mountPath: /usr/src/app/config
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+
+      volumes:
+        - name: log-data
+          emptyDir: {}
+        - name: config-volume
+          configMap:
+            name: log-output-config
+            items:
+              - key: information.txt
+                path: information.txt
