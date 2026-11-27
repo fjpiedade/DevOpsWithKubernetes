@@ -1,0 +1,19 @@
+cluster:
+  name: my-cluster
+
+destinations:
+  localLoki:
+    type: loki
+    url: http://loki-gateway.monitoring.svc.cluster.local/loki/api/v1/push
+    tenantId: "1"
+
+podLogsViaLoki:
+  enabled: true
+  collector: alloy-singleton
+
+collectors:
+  alloy-singleton:
+    presets: [filesystem-log-reader]
+
+selfReporting:
+  enabled: false
