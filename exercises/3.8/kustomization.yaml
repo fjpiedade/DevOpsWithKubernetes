@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - persistent-volume/persistentvolumeclaim.yaml
+  - manifests/configmap.yaml
+  - manifests/postgres.yaml
+  - manifests/todo-app-deployment.yaml
+  - manifests/todo-app-service.yaml
+  - manifests/todo-backend-deployment.yaml
+  - manifests/todo-backend-service.yaml
+  - manifests/todo-generator-cronjob.yaml
+  - manifests/ingress.yaml
