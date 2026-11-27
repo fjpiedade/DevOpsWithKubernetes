@@ -1,0 +1,64 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: todo-backup
+  namespace: project
+spec:
+  schedule: "0 0 * * *"
+  timeZone: "Etc/UTC"
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 3600
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          serviceAccountName: todo-backup
+          restartPolicy: Never
+          containers:
+            - name: database-backup
+              image: europe-north1-docker.pkg.dev/dwk-gke-fjp-2026/my-repository/todo-backup:3.10
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: PGHOST
+                  value: todo-postgres.project.svc.cluster.local
+                - name: PGPORT
+                  value: "5432"
+                - name: PGDATABASE
+                  value: todos
+                - name: PGUSER
+                  value: todo
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: todo-postgres-secret
+                      key: POSTGRES_PASSWORD
+                - name: GCS_BUCKET
+                  value: dwk-gke-fjp-2026-todo-backups
+              command:
+                - sh
+                - -c
+                - |
+                  set -eu
+
+                  TIMESTAMP="$(date -u +%Y%m%dT%H%M%SZ)"
+                  BACKUP_FILE="/tmp/todos-${TIMESTAMP}.dump"
+
+                  echo "Creating PostgreSQL backup..."
+                  pg_dump --format=custom --no-owner --no-acl \
+                    --file="${BACKUP_FILE}"
+
+                  echo "Uploading backup to Google Cloud Storage..."
+                  gcloud storage cp "${BACKUP_FILE}" \
+                    "gs://${GCS_BUCKET}/postgres/todos-${TIMESTAMP}.dump"
+
+                  echo "Backup completed successfully."
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 128Mi
+                limits:
+                  cpu: 500m
+                  memory: 512Mi
