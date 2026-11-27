@@ -34,5 +34,7 @@ My submissions for the [DevOps with Kubernetes course](https://courses.mooc.fi/o
 | [3.3](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/3.3/exercises/3.3)               | [log-output / ping-pong / gateway API](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/main/exercises/3.3)            | [Release 3.3](https://github.com/fjpiedade/DevOpsWithKubernetes/releases/tag/3.3)   |
 | [3.4](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/3.4/exercises/3.4)               | [ping-pong / log-output / Gateway API URLRewrite](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/main/exercises/3.4) | [Release 3.4](https://github.com/fjpiedade/DevOpsWithKubernetes/releases/tag/3.4)   |
 | [3.5](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/3.5/exercises/3.5)               | [todo-app / kustomize / Google Kubernetes Engine](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/main/exercises/3.5) | [Release 3.5](https://github.com/fjpiedade/DevOpsWithKubernetes/releases/tag/3.5)   |
+| [3.6](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/3.6/exercises/3.6) | [todo-app / GitHub Actions / Artifact Registry / Google Kubernetes Engine](https://github.com/fjpiedade/DevOpsWithKubernetes/tree/main/exercises/3.6) | [Release 3.6](https://github.com/fjpiedade/DevOpsWithKubernetes/releases/tag/3.6) |
+
 
 More exercises will be added as the course progresses.
