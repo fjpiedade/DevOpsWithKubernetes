@@ -3,7 +3,7 @@ name: Build and deploy to GKE
 on:
   push:
     branches:
-      - main
+      - "**"
 
 permissions:
   contents: read
@@ -15,7 +15,8 @@ env:
   GKE_ZONE: ${{ vars.GKE_ZONE }}
   REGISTRY: ${{ vars.REGISTRY }}
   REPOSITORY: ${{ vars.REPOSITORY }}
-  IMAGE_TAG: main-${{ github.sha }}
+  IMAGE_TAG: ${{ github.ref_name }}-${{ github.sha }}
+  BRANCH_NAME: ${{ github.ref_name }}
 
 jobs:
   build-and-deploy:
@@ -48,36 +49,56 @@ jobs:
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v3
 
+      - name: Determine namespace
+        run: |
+          if [ "$BRANCH_NAME" = "main" ]; then
+            NAMESPACE="project"
+          else
+            NAMESPACE="$BRANCH_NAME"
+          fi
+
+          echo "NAMESPACE=$NAMESPACE" >> "$GITHUB_ENV"
+          echo "Deploying branch $BRANCH_NAME to namespace $NAMESPACE"
+
+      - name: Create namespace if needed
+        run: |
+          kubectl get namespace "$NAMESPACE" >/dev/null 2>&1 || \
+            kubectl create namespace "$NAMESPACE"
+
       - name: Build and push Todo App
         run: |
           IMAGE="$REGISTRY/$PROJECT_ID/$REPOSITORY/todo-app:$IMAGE_TAG"
-          docker build -t "$IMAGE" exercises/3.6/todo-app
+          docker build -t "$IMAGE" exercises/3.7/todo-app
           docker push "$IMAGE"
 
       - name: Build and push Todo Backend
         run: |
           IMAGE="$REGISTRY/$PROJECT_ID/$REPOSITORY/todo-backend:$IMAGE_TAG"
-          docker build -t "$IMAGE" exercises/3.6/todo-backend
+          docker build -t "$IMAGE" exercises/3.7/todo-backend
           docker push "$IMAGE"
 
       - name: Build and push Todo Generator
         run: |
           IMAGE="$REGISTRY/$PROJECT_ID/$REPOSITORY/todo-generator:$IMAGE_TAG"
-          docker build -t "$IMAGE" exercises/3.6/todo-generator
+          docker build -t "$IMAGE" exercises/3.7/todo-generator
           docker push "$IMAGE"
 
       - name: Deploy with Kustomize
-        working-directory: exercises/3.6
+        working-directory: exercises/3.7
         run: |
+          kustomize edit set namespace "$NAMESPACE"
+
           kustomize edit set image \
             fjpiedade/todo-app="$REGISTRY/$PROJECT_ID/$REPOSITORY/todo-app:$IMAGE_TAG" \
             fjpiedade/todo-backend="$REGISTRY/$PROJECT_ID/$REPOSITORY/todo-backend:$IMAGE_TAG" \
             fjpiedade/todo-generator="$REGISTRY/$PROJECT_ID/$REPOSITORY/todo-generator:$IMAGE_TAG"
 
+          kubectl config set-context --current --namespace="$NAMESPACE"
+
           kustomize build . | kubectl apply -f -
 
       - name: Verify deployments
         run: |
-          kubectl rollout status deployment/todo-app -n project --timeout=180s
-          kubectl rollout status deployment/todo-backend -n project --timeout=180s
-          kubectl get cronjob todo-generator -n project
+          kubectl rollout status deployment/todo-app -n "$NAMESPACE" --timeout=180s
+          kubectl rollout status deployment/todo-backend -n "$NAMESPACE" --timeout=180s
+          kubectl get cronjob todo-generator -n "$NAMESPACE"
